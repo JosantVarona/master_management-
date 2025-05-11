@@ -1,13 +1,16 @@
 package dam.josantvarona.tfgbakend.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -49,8 +52,9 @@ public class Center {
     @Column(name = "archive", nullable = false)
     private Integer archive;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "idCenter")
-    private Set<Activity> activities = new LinkedHashSet<>();
+    private List<Activity> activities = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -108,11 +112,11 @@ public class Center {
         this.archive = archive;
     }
 
-    public Set<Activity> getActivities() {
+    public List<Activity> getActivities() {
         return activities;
     }
 
-    public void setActivities(Set<Activity> activities) {
+    public void setActivities(List<Activity> activities) {
         this.activities = activities;
     }
 

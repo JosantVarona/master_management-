@@ -1,8 +1,11 @@
 package dam.josantvarona.tfgbakend.Controller;
 
+import dam.josantvarona.tfgbakend.Model.Activity;
 import dam.josantvarona.tfgbakend.Model.Center;
+import dam.josantvarona.tfgbakend.Services.Activity_service;
 import dam.josantvarona.tfgbakend.Services.Center_service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +18,20 @@ import java.util.Map;
 public class Center_controller {
     @Autowired
     private Center_service center_service;
+    @Autowired
+    private Activity_service activity_service;
 
     @CrossOrigin
     @PutMapping("/update_center/{id}")
     public ResponseEntity<Center> updateCenter(@PathVariable Integer id, @RequestBody Center center ) {
         Center new_center = center_service.updateCenter(id, center);
         return ResponseEntity.status(HttpStatus.OK).body(new_center);
+    }
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public ResponseEntity<Center> getCenterbyId(@PathVariable Integer id) {
+        Center center = center_service.getcenterbyid(id);
+        return new ResponseEntity<>(center, new HttpHeaders(), HttpStatus.OK);
     }
     @CrossOrigin
     @PutMapping("archive/{id}/{archive}")
@@ -40,5 +51,11 @@ public class Center_controller {
     public HttpStatus deleteClient(@PathVariable Integer id) {
         center_service.deleteCenter(id);
         return HttpStatus.ACCEPTED;
+    }
+    @CrossOrigin
+    @PostMapping("/{id}/activity")
+    public ResponseEntity<Activity> addActivity(@PathVariable Integer id, @RequestBody Activity activity) {
+        Activity addActivi = activity_service.insertActivity(id, activity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addActivi);
     }
 }

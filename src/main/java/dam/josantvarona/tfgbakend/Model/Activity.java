@@ -1,5 +1,6 @@
 package dam.josantvarona.tfgbakend.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,7 @@ public class Activity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonBackReference
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_center", nullable = false)
@@ -37,13 +39,12 @@ public class Activity {
     private String specifics;
 
     @Size(max = 300)
-    @NotNull
     @Column(name = "picture", nullable = false, length = 300)
     private String picture;
 
     @NotNull
     @Column(name = "fecha_acti", nullable = false)
-    private LocalDate fechaActi;
+    private LocalDate fecha_acti;
 
     @NotNull
     @Column(name = "archive", nullable = false)
@@ -100,12 +101,12 @@ public class Activity {
         this.picture = picture;
     }
 
-    public LocalDate getFechaActi() {
-        return fechaActi;
+    public LocalDate getFecha_acti() {
+        return fecha_acti;
     }
 
-    public void setFechaActi(LocalDate fechaActi) {
-        this.fechaActi = fechaActi;
+    public void setFecha_acti(LocalDate fechaActi) {
+        this.fecha_acti = fechaActi;
     }
 
     public Integer getArchive() {
