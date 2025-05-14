@@ -1,10 +1,15 @@
 package dam.josantvarona.tfgbakend.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,10 +20,10 @@ public class User {
     private Integer id;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "id_actividad", nullable = false)
-    private Activity idActividad;
+    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+   // @JoinColumn(name = "id_actividad", nullable = false)
+    //private Activity idActividad;
 
     @Size(max = 60)
     @NotNull
@@ -44,20 +49,23 @@ public class User {
     @Column(name = "level", nullable = false)
     private Integer level;
 
+    @Column(name = "state")
+    private String state;
+
+    @NotNull
+    @Column(name = "pass")
+    private String pass;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "idUser")
+    private List<Activity> activities = new ArrayList<>();
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Activity getIdActividad() {
-        return idActividad;
-    }
-
-    public void setIdActividad(Activity idActividad) {
-        this.idActividad = idActividad;
     }
 
     public String getName() {
@@ -100,4 +108,27 @@ public class User {
         this.level = level;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 }

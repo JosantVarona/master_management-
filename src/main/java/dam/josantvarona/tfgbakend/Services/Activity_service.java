@@ -1,10 +1,14 @@
 package dam.josantvarona.tfgbakend.Services;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dam.josantvarona.tfgbakend.Excepcions.RecordNotFoundException;
 import dam.josantvarona.tfgbakend.Model.Activity;
 import dam.josantvarona.tfgbakend.Model.Center;
+import dam.josantvarona.tfgbakend.Model.User;
 import dam.josantvarona.tfgbakend.Repositories.Activity_repository;
 import dam.josantvarona.tfgbakend.Repositories.Center_repository;
+import dam.josantvarona.tfgbakend.Repositories.User_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +22,20 @@ public class Activity_service {
     @Autowired
     private Center_repository centerRepository;
 
+    @Autowired
+    private User_repository userRepo;
+
     //Metodo para insertar Actividades en el centro seleccionado
     public Activity insertActivity(Integer center,Activity activity) {
+        Optional<User> userDB = userRepo.findById(activity.getIdUser().getId());
         Optional<Center> centerBD = centerRepository.findById(center);
-        if (centerBD.isPresent()) {
+        if (centerBD.isPresent() && userDB.isPresent()) {
             Activity newActivity = new Activity();
             newActivity = activity;
             newActivity.setArchive(0);
+            newActivity.setState("Pendiente");
             newActivity.setIdCenter(centerBD.get());
+            newActivity.setIdUser(userDB.get());
             newActivity = repository.save(newActivity);
             return newActivity;
         }else {
@@ -43,6 +53,7 @@ public class Activity_service {
             activity.setType(newactivity.getType());
             activity.setSpecifics(newactivity.getSpecifics());
             activity.setPicture(newactivity.getPicture());
+            activity.setState(newactivity.getState());
             activity = repository.save(activity);
             return activity;
         } else {
@@ -72,6 +83,7 @@ public class Activity_service {
         Optional<Activity> activityBD = repository.findById(id);
         if (activityBD.isPresent()) {
             Activity activity = activityBD.get();
+
             return activity;
         }else {
             throw new RecordNotFoundException("No se hemos encontrado informacion de la actividad",id);
