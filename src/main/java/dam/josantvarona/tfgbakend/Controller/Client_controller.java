@@ -22,13 +22,14 @@ public class Client_controller {
     @Autowired
     private Center_service centerService;
 
+    // Añadir cliente
     @CrossOrigin
     @PostMapping
     public ResponseEntity<Client> addClient(@RequestBody Client client) {
         Client addclient = clientService.inserclient(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(addclient);
     }
-
+    // Obtener clientes
     @CrossOrigin
     @GetMapping
     public ResponseEntity<List<Client>> getAllClient() {

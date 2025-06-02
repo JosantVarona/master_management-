@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("activity")
@@ -44,10 +45,25 @@ public class Activity_controller {
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @CrossOrigin
+    @PutMapping("/update_state/{id}/{state}")
+    public ResponseEntity<Map<String, Object>> updateState(@PathVariable Integer id, @PathVariable String state ) {
+        activityService.stateActivity(id, state);
+        Map<String, Object> response = new HashMap<>();
+        response.put("Master Manager", "Estado de la actividad se a actualizado");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
     @CrossOrigin
     @DeleteMapping("delete/{id}")
     public HttpStatus deleteActivity(@PathVariable Integer id) {
         activityService.deleteActivity(id);
         return HttpStatus.ACCEPTED;
+    }
+    @CrossOrigin
+    @GetMapping("/info_activity/{id}")
+    public ResponseEntity<Object> getInfoActivity(@PathVariable Integer id) {
+        Object object = activityService.allInfoActivities(id);
+        return new ResponseEntity<>(object, new HttpHeaders(), HttpStatus.OK);
     }
 }

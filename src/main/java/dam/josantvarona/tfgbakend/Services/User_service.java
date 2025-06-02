@@ -37,6 +37,9 @@ public class User_service {
                if (users.size() < 2) { // Le damos el nivel de usuario en este caso nivel admi
                    user.setLevel(3);
                    user.setState("Habilitado");
+               }else {
+                   user.setLevel(1);
+                   user.setState("Desabilitado");
                }
                 result = userRepo.save(user);
             }
@@ -59,11 +62,10 @@ public class User_service {
             if (userBD.isPresent()) {
                 User usernew = userBD.get();
                 usernew.setEmail(user.getEmail());
+                usernew.setDni(user.getDni());
                 usernew.setName(user.getName());
                 usernew.setLevel(user.getLevel());
-                usernew.setState(user.getState());
                 usernew.setTelephone(user.getTelephone());
-                usernew.setState(user.getState());
                 userRepo.save(usernew);
                 return usernew;
             }else {
@@ -97,6 +99,21 @@ public class User_service {
             userLazy.setActivities(user.getActivities());
             return userLazy;
         } else {
+            throw new RecordNotFoundException("No se encontro al usuario", id);
+        }
+    }
+    public User disableUser (Integer id, String state) {
+        if (id != null) {
+            Optional<User> userBD = userRepo.findById(id);
+            if (userBD.isPresent()) {
+                User user = userBD.get();
+                user.setState(state);
+                userRepo.save(user);
+                return user;
+            }else {
+                throw new RecordNotFoundException("No se encontro al usuario", id);
+            }
+        }else {
             throw new RecordNotFoundException("No se encontro al usuario", id);
         }
     }

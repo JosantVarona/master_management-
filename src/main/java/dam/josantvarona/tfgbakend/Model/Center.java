@@ -2,6 +2,7 @@ package dam.josantvarona.tfgbakend.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -52,7 +53,7 @@ public class Center {
     @Column(name = "archive", nullable = false)
     private Integer archive;
 
-    @JsonIgnore
+    @JsonManagedReference(value = "center-activity")
     @OneToMany(mappedBy = "idCenter")
     private List<Activity> activities = new ArrayList<>();
 

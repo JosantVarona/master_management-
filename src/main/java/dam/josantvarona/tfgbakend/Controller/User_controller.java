@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("user")
@@ -19,19 +21,15 @@ public class User_controller {
     @CrossOrigin
     @GetMapping
     public ResponseEntity<List<User>> getAllClient() {
-        List<User> clients = userService.findAll();
-        return new ResponseEntity<List<User>>(clients, new HttpHeaders(), HttpStatus.OK);
+        List<User> users = userService.findAll();
+        return new ResponseEntity<List<User>>(users, new HttpHeaders(), HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping("/insert")
-    public ResponseEntity<String> insert(@RequestBody User user) {
+    public ResponseEntity<User> insert(@RequestBody User user) {
         User inserUser = userService.InsertUser(user);
-        if (inserUser != null) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Se a insertado correctamente");
-        }else {
-            return ResponseEntity.status(HttpStatus.CREATED).body("No se a insertado correctamente");
-        }
+        return new ResponseEntity<>(inserUser, new HttpHeaders(), HttpStatus.OK);
     }
     @CrossOrigin
     @PutMapping("/update_user/{id}")
@@ -56,5 +54,18 @@ public class User_controller {
     public ResponseEntity<User> getClient(@PathVariable String email) {
         User user = userService.userbyEmail(email);
         return new ResponseEntity<>(user, new HttpHeaders(), HttpStatus.OK);
+    }
+    @CrossOrigin
+    @PutMapping("/state_user/{id}/{state}")
+    public ResponseEntity<Map<String, Object>> disableUser(@PathVariable Integer id, @PathVariable String state) {
+        userService.disableUser(id, state);
+        Map<String, Object>response = new HashMap<>();
+        if (state == "Habilitado") {
+            response.put("Master Manager", "Usuario Habilitado");
+        }
+        if (state == "Desabilitado") {
+            response.put("Master Manager", "Usuario Desabilitado");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

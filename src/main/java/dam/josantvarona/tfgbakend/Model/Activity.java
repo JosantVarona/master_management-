@@ -17,13 +17,13 @@ public class Activity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @JsonBackReference
+    @JsonBackReference(value = "center-activity")
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_center", nullable = false)
     private dam.josantvarona.tfgbakend.Model.Center idCenter;
 
-    @JsonBackReference
+    @JsonBackReference(value = "user-activity")
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_user", nullable = false)
@@ -41,12 +41,11 @@ public class Activity {
     private String type;
 
     @Size(max = 255)
-    @NotNull
-    @Column(name = "specifics", nullable = false)
+    @Column(name = "specifics")
     private String specifics;
 
     @Size(max = 300)
-    @Column(name = "picture", nullable = false, length = 300)
+    @Column(name = "picture", length = 300)
     private String picture;
 
     @NotNull

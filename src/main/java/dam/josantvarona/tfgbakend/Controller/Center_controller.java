@@ -27,6 +27,8 @@ public class Center_controller {
         Center new_center = center_service.updateCenter(id, center);
         return ResponseEntity.status(HttpStatus.OK).body(new_center);
     }
+
+    // Metodo para obtener las actividades del centro
     @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<Center> getCenterbyId(@PathVariable Integer id) {
@@ -53,9 +55,9 @@ public class Center_controller {
         return HttpStatus.ACCEPTED;
     }
     @CrossOrigin
-    @PostMapping("/{id}/activity")
-    public ResponseEntity<Activity> addActivity(@PathVariable Integer id, @RequestBody Activity activity) {
-        Activity addActivi = activity_service.insertActivity(id, activity);
+    @PostMapping("/{id}/{id_usuario}/activity")
+    public ResponseEntity<Activity> addActivity(@PathVariable Integer id, @PathVariable Integer id_usuario, @RequestBody Activity activity) {
+        Activity addActivi = activity_service.insertActivity(id, id_usuario, activity);
         return ResponseEntity.status(HttpStatus.CREATED).body(addActivi);
     }
 }

@@ -2,6 +2,7 @@ package dam.josantvarona.tfgbakend.Model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -56,7 +57,7 @@ public class User {
     @Column(name = "pass")
     private String pass;
 
-    @JsonIgnore
+    @JsonManagedReference(value = "user-activity")
     @OneToMany(mappedBy = "idUser")
     private List<Activity> activities = new ArrayList<>();
 
