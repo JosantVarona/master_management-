@@ -45,6 +45,12 @@ public class Activity_controller {
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @CrossOrigin
+    @PutMapping("complit/{id}")
+    public ResponseEntity<Activity> complitActivity(@PathVariable Integer id, @RequestBody Activity activity) {
+        Activity updatedActivity = activityService.compliteActivity(id, activity);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedActivity);
+    }
 
     @CrossOrigin
     @PutMapping("/update_state/{id}/{state}")
@@ -65,5 +71,13 @@ public class Activity_controller {
     public ResponseEntity<Object> getInfoActivity(@PathVariable Integer id) {
         Object object = activityService.allInfoActivities(id);
         return new ResponseEntity<>(object, new HttpHeaders(), HttpStatus.OK);
+    }
+    @CrossOrigin
+    @PutMapping("/reassign/{id_acti}/{id_user}")
+    public ResponseEntity<Map<String, Object>> reassing(@PathVariable Integer id_acti, @PathVariable Integer id_user ) {
+        activityService.reassign(id_acti, id_user);
+        Map<String, Object> response = new HashMap<>();
+        response.put("Master Manager", "Se ha podido reassignar la actividad");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

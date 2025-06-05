@@ -14,4 +14,9 @@ public interface Activity_repository extends JpaRepository<Activity, Integer> {
             "JOIN a.idUser u " +
             "WHERE a.id = :activityId")
     Object allinfoActivity(@Param("activityId") Integer activityId);
+    @Query("SELECT COUNT(a) > 0 FROM Activity a WHERE a.idCenter.id = :center AND a.name = :nameActi")
+    boolean existeActividad(@Param("center") Integer center, @Param("nameActi") String nameActi);
+
+
+
 }

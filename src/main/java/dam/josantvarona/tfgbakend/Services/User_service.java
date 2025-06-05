@@ -41,10 +41,14 @@ public class User_service {
                    user.setLevel(1);
                    user.setState("Desabilitado");
                }
-                result = userRepo.save(user);
+                return result = userRepo.save(user);
+            }else {
+                throw new RecordNotFoundException("Usuario ya exitente", 0);
             }
+        } else {
+            throw new RecordNotFoundException("Error al insertar usuario", 0);
         }
-        return result;
+
     }
     // Metodo para obtener el usuario por email
     public User userbyEmail(String email) {
@@ -60,14 +64,33 @@ public class User_service {
         if (id != null && user != null) {
             Optional<User> userBD = userRepo.findById(id);
             if (userBD.isPresent()) {
+
                 User usernew = userBD.get();
-                usernew.setEmail(user.getEmail());
-                usernew.setDni(user.getDni());
-                usernew.setName(user.getName());
-                usernew.setLevel(user.getLevel());
-                usernew.setTelephone(user.getTelephone());
-                userRepo.save(usernew);
-                return usernew;
+                System.out.println("Usuario encontrado: " + usernew.getEmail() + " el que envia " + user.getEmail());
+                if (usernew.getEmail().equals(user.getEmail())) {
+                    usernew.setDni(user.getDni());
+                    usernew.setName(user.getName());
+                    usernew.setLevel(user.getLevel());
+                    usernew.setTelephone(user.getTelephone());
+                    usernew.setPass(user.getPass());
+                    userRepo.save(usernew);
+                    return usernew;
+                }else {
+                    User aux = userRepo.findByEmail(user.getEmail());
+                    if (aux == null) {
+                        usernew.setEmail(user.getEmail());
+                        usernew.setDni(user.getDni());
+                        usernew.setName(user.getName());
+                        usernew.setLevel(user.getLevel());
+                        usernew.setTelephone(user.getTelephone());
+                        usernew.setPass(user.getPass());
+                        userRepo.save(usernew);
+                        return usernew;
+
+                    }else {
+                        throw new RecordNotFoundException("Correo ya exitente", id);
+                    }
+                }
             }else {
                 throw new RecordNotFoundException("No se encontro al usuario", id);
             }
@@ -96,6 +119,7 @@ public class User_service {
             userLazy.setLevel(user.getLevel());
             userLazy.setState(user.getState());
             userLazy.setTelephone(user.getTelephone());
+            userLazy.setPass(user.getPass());
             userLazy.setActivities(user.getActivities());
             return userLazy;
         } else {

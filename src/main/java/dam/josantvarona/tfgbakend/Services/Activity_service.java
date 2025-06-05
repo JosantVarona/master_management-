@@ -10,9 +10,12 @@ import dam.josantvarona.tfgbakend.Repositories.User_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 public class Activity_service {
@@ -30,6 +33,9 @@ public class Activity_service {
         Optional<User> userDB = userRepo.findById(id_usuario);
         Optional<Center> centerBD = centerRepository.findById(center);
         if (centerBD.isPresent() && userDB.isPresent()) {
+            if (repository.existeActividad(center, activity.getName())){
+                throw new RecordNotFoundException("Ya existe esta actividad en el centro ", 0);
+            }
             Activity newActivity = new Activity();
             newActivity = activity;
             newActivity.setArchive(0);
@@ -48,14 +54,44 @@ public class Activity_service {
         Optional<Activity> activityBD = repository.findById(id);
         if (activityBD.isPresent()) {
             Activity activity = activityBD.get();
-            activity.setName(newactivity.getName());
-            activity.setType(newactivity.getType());
-            activity = repository.save(activity);
-            return activity;
+            if (activity.getName().equals(newactivity.getName())) {
+                activity.setName(newactivity.getName());
+                activity.setType(newactivity.getType());
+                activity = repository.save(activity);
+                return activity;
+            }else {
+                if (repository.existeActividad(activity.getIdCenter().getId(), newactivity.getName())){
+                    throw new RecordNotFoundException("Ya existe esta actividad en el centro ", 0);
+                }else {
+                    activity.setName(newactivity.getName());
+                    activity.setType(newactivity.getType());
+                    activity = repository.save(activity);
+                    return activity;
+                }
+            }
+
         } else {
             throw new RecordNotFoundException("Error al actualizar la actividad",id);
         }
     }
+    // Metodo para actualizar los camos de especificacion y imagenes
+    public Activity compliteActivity(Integer id, Activity activity) {
+        if (id != null && activity != null ) {
+            Optional<Activity> activityBD = repository.findById(id);
+            if (activityBD.isPresent()) {
+                Activity activity1 = activityBD.get();
+                activity1.setSpecifics(activity.getSpecifics());
+                activity1.setPicture(activity.getPicture());
+                activity1 = repository.save(activity1);
+                return activity1;
+            }else {
+                throw new RecordNotFoundException("No se hemos encontrado el actividad",id);
+            }
+        } else {
+            throw new RecordNotFoundException("No hay datos del actividad",id);
+        }
+    }
+
     // Archiva la actividad
     public Activity archiveActivity(Integer id, Integer archive) {
         if (id != null && archive != null) {
@@ -135,6 +171,24 @@ public class Activity_service {
         } else {
             throw new RecordNotFoundException("No hemos podido encontrar la actividad", id);
         }
+    }
+    public Activity reassign(Integer id_activity, Integer id_user) {
+        if (id_activity != null && id_user != null) {
+            Optional<Activity> activityBD = repository.findById(id_activity);
+            Optional<User> userDB = userRepo.findById(id_user);
+            if (activityBD.isPresent() && userDB.isPresent()) {
+                Activity activity = activityBD.get();
+                User user = userDB.get();
+                activity.setIdUser(user);
+                activity = repository.save(activity);
+                return activity;
+            }else {
+                throw new RecordNotFoundException("No se ha podido asignar la actividad",id_activity);
+            }
+        }else {
+            throw new RecordNotFoundException("No se ha podido asignar la actividad",id_activity);
+        }
+
     }
 
 }

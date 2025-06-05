@@ -26,8 +26,10 @@ public class Center_service {
     public Center insertCenter(Integer id, Center newCenter) {
         Optional<Client> client = clientRepo.findById(id);
         if (client.isPresent()) {
+            if(repo.existeDireccion(id, newCenter.getAddress())){
+                throw new RecordNotFoundException("Centro ya registrado del cliente", 0);
+            }
             Center newCenterDB = new Center();
-
             newCenterDB.setLocation(newCenter.getLocation());
             newCenterDB.setZipCode(newCenter.getZipCode());
             newCenterDB.setAddress(newCenter.getAddress());
@@ -45,12 +47,28 @@ public class Center_service {
         Optional<Center> center = repo.findById(id);
         if (center.isPresent()) {
             Center newCenterDB = center.get();
-            newCenterDB.setLocation(newCenter.getLocation());
-            newCenterDB.setZipCode(newCenter.getZipCode());
-            newCenterDB.setAddress(newCenter.getAddress());
-            newCenterDB.setTelephone(newCenter.getTelephone());
-            newCenterDB = repo.save(newCenterDB);
-            return newCenterDB;
+            if(newCenterDB.getAddress().equals(newCenter.getAddress())){
+                newCenterDB.setLocation(newCenter.getLocation());
+                newCenterDB.setZipCode(newCenter.getZipCode());
+                newCenterDB.setAddress(newCenter.getAddress());
+                newCenterDB.setTelephone(newCenter.getTelephone());
+                newCenterDB = repo.save(newCenterDB);
+                return newCenterDB;
+            }else {
+                if(repo.existeDireccion(newCenterDB.getIdClient().getId(), newCenter.getAddress())){
+
+                    throw new RecordNotFoundException("Centro ya registrado del cliente", 0);
+                }else {
+                    System.out.println(id + " mas el calle"+ newCenter.getAddress());
+                    newCenterDB.setLocation(newCenter.getLocation());
+                    newCenterDB.setZipCode(newCenter.getZipCode());
+                    newCenterDB.setAddress(newCenter.getAddress());
+                    newCenterDB.setTelephone(newCenter.getTelephone());
+                    newCenterDB = repo.save(newCenterDB);
+                    return newCenterDB;
+                }
+            }
+
         }else {
             throw new RuntimeException("No siste el centro"+ id);
         }

@@ -44,8 +44,8 @@ public class Activity {
     @Column(name = "specifics")
     private String specifics;
 
-    @Size(max = 300)
-    @Column(name = "picture", length = 300)
+    @Size(max = 1000000, message = "el tamaño debe estar entre 0 y 1000000")
+    @Column(columnDefinition = "TEXT")
     private String picture;
 
     @NotNull
