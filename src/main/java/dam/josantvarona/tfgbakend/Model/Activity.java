@@ -1,12 +1,13 @@
 package dam.josantvarona.tfgbakend.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "activities")
@@ -16,10 +17,18 @@ public class Activity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonBackReference(value = "center-activity")
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_center", nullable = false)
     private dam.josantvarona.tfgbakend.Model.Center idCenter;
+
+    @JsonBackReference(value = "user-activity")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_user", nullable = false)
+    private User idUser;
+
 
     @Size(max = 100)
     @NotNull
@@ -32,25 +41,24 @@ public class Activity {
     private String type;
 
     @Size(max = 255)
-    @NotNull
-    @Column(name = "specifics", nullable = false)
+    @Column(name = "specifics")
     private String specifics;
 
-    @Size(max = 300)
-    @NotNull
-    @Column(name = "picture", nullable = false, length = 300)
+    @Size(max = 1000000, message = "el tamaño debe estar entre 0 y 1000000")
+    @Column(columnDefinition = "TEXT")
     private String picture;
 
     @NotNull
     @Column(name = "fecha_acti", nullable = false)
-    private LocalDate fechaActi;
+    private LocalDate fecha_acti;
 
     @NotNull
     @Column(name = "archive", nullable = false)
     private Integer archive;
 
-    @OneToMany(mappedBy = "idActividad")
-    private Set<dam.josantvarona.tfgbakend.Model.User> users = new LinkedHashSet<>();
+    @Column(name = "state")
+    private String state;
+
 
     public Integer getId() {
         return id;
@@ -100,12 +108,12 @@ public class Activity {
         this.picture = picture;
     }
 
-    public LocalDate getFechaActi() {
-        return fechaActi;
+    public LocalDate getFecha_acti() {
+        return fecha_acti;
     }
 
-    public void setFechaActi(LocalDate fechaActi) {
-        this.fechaActi = fechaActi;
+    public void setFecha_acti(LocalDate fechaActi) {
+        this.fecha_acti = fechaActi;
     }
 
     public Integer getArchive() {
@@ -116,12 +124,19 @@ public class Activity {
         this.archive = archive;
     }
 
-    public Set<dam.josantvarona.tfgbakend.Model.User> getUsers() {
-        return users;
+    public String getState() {
+        return state;
     }
 
-    public void setUsers(Set<dam.josantvarona.tfgbakend.Model.User> users) {
-        this.users = users;
+    public void setState(String state) {
+        this.state = state;
     }
 
+    public User getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(User idUser) {
+        this.idUser = idUser;
+    }
 }

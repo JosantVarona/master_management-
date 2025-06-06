@@ -32,13 +32,14 @@ public class Client_service {
     /**
      * Metodo para obtener todos los clientes
      */
-    public List<Client> getAllclient() {
-        List<Client> clients = client_repository.findAll();
-        if ( clients.size() > 0 ) {
-            return clients;
+    public List<Client> getAllclient(Integer level_user) {
+        List<Client> clients = new ArrayList<Client>();
+        if ( level_user == 3 ) {
+            clients = client_repository.findAll();
         }else {
-            return new ArrayList<Client>();
+            clients = client_repository.listlevel();
         }
+        return clients;
     }
 
     /**

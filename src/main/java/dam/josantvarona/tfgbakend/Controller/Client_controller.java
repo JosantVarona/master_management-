@@ -22,17 +22,18 @@ public class Client_controller {
     @Autowired
     private Center_service centerService;
 
+    // Añadir cliente
     @CrossOrigin
     @PostMapping
     public ResponseEntity<Client> addClient(@RequestBody Client client) {
         Client addclient = clientService.inserclient(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(addclient);
     }
-
+    // Obtener clientes
     @CrossOrigin
-    @GetMapping
-    public ResponseEntity<List<Client>> getAllClient() {
-        List<Client> clients = clientService.getAllclient();
+    @GetMapping("/bylevel/{level_user}")
+    public ResponseEntity<List<Client>> getAllClient(@PathVariable Integer level_user) {
+        List<Client> clients = clientService.getAllclient(level_user);
         return new ResponseEntity<List<Client>>(clients, new HttpHeaders(), HttpStatus.OK);
     }
 
