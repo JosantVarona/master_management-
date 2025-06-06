@@ -80,6 +80,7 @@ public class Activity_service {
             Optional<Activity> activityBD = repository.findById(id);
             if (activityBD.isPresent()) {
                 Activity activity1 = activityBD.get();
+                activity1.setState("En curso");
                 activity1.setSpecifics(activity.getSpecifics());
                 activity1.setPicture(activity.getPicture());
                 activity1 = repository.save(activity1);

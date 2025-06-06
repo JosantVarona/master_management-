@@ -68,4 +68,12 @@ public class User_controller {
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+    @CrossOrigin
+    @PostMapping("/recuperar/{email}")
+    public ResponseEntity<Map<String, String>> recuPass(@PathVariable String email) {
+        userService.enviarEmail(email);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Email enviado");
+        return ResponseEntity.ok(response);
+    }
 }

@@ -7,6 +7,8 @@ import dam.josantvarona.tfgbakend.Model.Activity;
 import dam.josantvarona.tfgbakend.Model.User;
 import dam.josantvarona.tfgbakend.Repositories.User_repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class User_service {
     @Autowired
     private User_repository userRepo;
+    @Autowired
+    private JavaMailSender mailSender;
 
     public List<User> findAll() {
         List<User> users = userRepo.findAll();
@@ -56,6 +60,25 @@ public class User_service {
             return userRepo.findByEmail(email);
         }else {
             throw new RecordNotFoundException("No se encotrado ningun usuario", email);
+        }
+    }
+    // Metodo para enviar un mensaje al correo
+    public void enviarEmail(String email) {
+        if (email != null && !email.isEmpty()) {
+            User userBD = userRepo.findByEmail(email);
+            if (userBD != null) {
+                userBD.setPass("dobleM");
+                userRepo.save(userBD);
+                SimpleMailMessage message = new SimpleMailMessage();
+                message.setTo(email);
+                message.setSubject("Contraseña recuperada");
+                message.setText("La contraseña es la siguiente: dobleM (Recomenados cambiar la contraseña)");
+                mailSender.send(message);
+            }else {
+                throw new RecordNotFoundException("No se encotrado ningun usuario con ese correo", email);
+            }
+        }else {
+            throw new RecordNotFoundException("No se encotrado ningun usuario", 0);
         }
     }
 
